@@ -1,0 +1,47 @@
+::selection { background-color: #E13300; color: white; }
+::-moz-selection { background-color: #E13300; color: white; }
+header{
+  padding: 15px;
+  background-color: #292b2c;
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 1030;
+  color: #fff;
+}
+.filter-column{
+  padding: 5px;
+  input{
+    padding:10px  15px;
+    border-radius: 5px;
+    border: 1px solid #f1f1f1;
+  }
+}
+.main-feed{
+
+  .book-item-tbl{
+    .book-item-row{
+      td{
+        padding: 10px 15px;
+        vertical-align: top;
+      }
+      .book-img-td{
+        .book-img{
+          img {
+            max-width: 200px;
+          }
+        }
+      }
+      .book-name-td{
+        .book-name{
+
+        }
+      }
+    }
+  }
+}
+.main-feed{
+  padding: 15px;
+}
+
