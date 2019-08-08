@@ -24,44 +24,12 @@ class BookModel extends CI_Model
      */
     public function searchBookFullText($countAuthor = 1, $search = "")
     {
-        $booksIds = [];
         $authorIds = [];
 
         // select author name
-        if (!empty(trim($search))) {
-            $sql = "SELECT id FROM " . $this->author_tbl . " WHERE MATCH (name) AGAINST (?)";
-            $resultAuthor = $this->db->query($sql, [$search])->result_array();
-            $authorIds = array_map(function ($relateItem) {
-                return $relateItem['id'];
-            }, $resultAuthor);
-        }
+        $authorIds = $this->searchAuthorByName($search);
+        $booksIds = $this->getBooksIds($countAuthor, $authorIds);
 
-        // select author count
-        if ($countAuthor > 1) {
-            $this->db->select('count(author_id), book_id');
-            $this->db->from($this->author_relate_tbl);
-            $this->db->group_by('book_id');
-            if (count($authorIds) > 0) {
-                $this->db->where_in('author_id', $authorIds);
-            }
-            $this->db->having('count(author_id)', $countAuthor, false);
-            $resultRelateAuthorToBooks = $this->db->get()->result_array();
-            $booksIds = array_map(function ($relateItem) {
-                return $relateItem['book_id'];
-            }, $resultRelateAuthorToBooks);
-
-        } else {
-            if (count($authorIds) > 0) {
-                $this->db->select('book_id');
-                $this->db->from($this->author_relate_tbl);
-                $this->db->group_by('book_id');
-                $this->db->where_in('author_id', $authorIds);
-                $resultRelateAuthorToBooks = $this->db->get()->result_array();
-                $booksIds = array_map(function ($relateItem) {
-                    return $relateItem['book_id'];
-                }, $resultRelateAuthorToBooks);
-            }
-        }
 
         // select books
         if (trim($search) != "") {
@@ -73,12 +41,65 @@ class BookModel extends CI_Model
         } else {
             if (count($booksIds) > 0) {
                 $this->db->where_in('id', $booksIds);
-            }else if ($countAuthor > 1) {
-                return [];
+            } else {
+                if ($countAuthor > 1) {
+                    return [];
+                }
             }
 
             return $this->db->get($this->book_tbl)->result_array();
 
+        }
+    }
+
+    /**
+     * @param $searchText
+     */
+    private function searchAuthorByName($searchText)
+    {
+        // select author name
+        if (trim($searchText) != "") {
+            $sql = "SELECT id FROM " . $this->author_tbl . " WHERE MATCH (name) AGAINST (?)";
+            $resultAuthor = $this->db->query($sql, [$searchText])->result_array();
+            return array_map(function ($relateItem) {
+                return $relateItem['id'];
+            }, $resultAuthor);
+        }
+        return [];
+    }
+
+    /**
+     * @param $countAuthor
+     * @param $authorIds
+     * @return array
+     */
+    private function getBooksIds($countAuthor, $authorIds)
+    {
+        // select author count
+        if ($countAuthor > 1) {
+            $this->db->select('count(author_id), book_id');
+            $this->db->from($this->author_relate_tbl);
+            $this->db->group_by('book_id');
+            if (count($authorIds) > 0) {
+                $this->db->where_in('author_id', $authorIds);
+            }
+            $this->db->having('count(author_id)', $countAuthor, false);
+            $resultRelateAuthorToBooks = $this->db->get()->result_array();
+            return array_map(function ($relateItem) {
+                return $relateItem['book_id'];
+            }, $resultRelateAuthorToBooks);
+
+        } else {
+            if (count($authorIds) > 0) {
+                $this->db->select('book_id');
+                $this->db->from($this->author_relate_tbl);
+                $this->db->group_by('book_id');
+                $this->db->where_in('author_id', $authorIds);
+                $resultRelateAuthorToBooks = $this->db->get()->result_array();
+                return array_map(function ($relateItem) {
+                    return $relateItem['book_id'];
+                }, $resultRelateAuthorToBooks);
+            }
         }
     }
 
