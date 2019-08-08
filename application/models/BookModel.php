@@ -32,12 +32,13 @@ class BookModel extends CI_Model
         // select books
         if (trim($search) != "") {
             $sql = "SELECT * FROM " . $this->book_tbl . " WHERE MATCH (name) AGAINST (?)";
-            if (count($booksIds) > 0) {
+            if (!empty($booksIds) && count($booksIds) > 0) {
                 $sql .= " OR id IN (" . implode(',', $booksIds) . ")";
             }
             return $this->db->query($sql, [$search])->result_array();
         } else {
-            if (count($booksIds) > 0) {
+//            dd($booksIds);
+            if (!empty($booksIds) && count($booksIds) > 0) {
                 $this->db->where_in('id', $booksIds);
             } else {
                 if ($countAuthor > 1) {
