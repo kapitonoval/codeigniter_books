@@ -24,8 +24,6 @@ class BookModel extends CI_Model
      */
     public function searchBookFullText($countAuthor = 1, $search = "")
     {
-        $authorIds = [];
-
         // select author name
         $authorIds = $this->searchAuthorByName($search);
         $booksIds = $this->getBooksIds($countAuthor, $authorIds);
