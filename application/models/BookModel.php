@@ -73,9 +73,12 @@ class BookModel extends CI_Model
         } else {
             if (count($booksIds) > 0) {
                 $this->db->where_in('id', $booksIds);
-                return $this->db->get($this->book_tbl)->result_array();
+            }else if ($countAuthor > 1) {
+                return [];
             }
-            return [];
+
+            return $this->db->get($this->book_tbl)->result_array();
+
         }
     }
 
