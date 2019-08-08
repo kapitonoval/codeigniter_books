@@ -21,11 +21,11 @@ class Books extends CI_Controller
 
         $data = $this->input->get();
 
-        $title = $data['title'] ?? '';
-        $authorName = $data['author_name'] ?? '';
+        $search = $data['search'] ?? '';
         $authorCount = (int)($data['author_count'] ?? 1);
 
-        $viewData['feedDataBooks'] = $this->BookModel->getBook($authorCount, $authorName, $title);
+        $viewData['feedDataBooks'] = $this->BookModel->searchBookFullText($authorCount, $search);
+        $viewData['authors'] = $this->BookModel->getNameAuthors();
 
         $this->load->view('main', $viewData);
     }

@@ -21,7 +21,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
             <div class="md-4 pt-5">
                 <form action="/" method="get">
+                    <div class="author-name">
+                        <div class="label__filter">Список авторов</div>
+                        <?=implode(', ', $authors)?>
+                    </div>
                     <div class="filter-column f-author-count">
+                        <div class="label__filter">Количество авторов</div>
                         <select name="author_count" id="">
                             <option value="1">
                                 1
@@ -41,13 +46,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         </select>
                     </div>
                     <div class="filter-column f-title">
-                        <input type="text" name="title" placeholder="введите название книги">
-                    </div>
-                    <div class="filter-column f-author">
-                        <input type="text" name="author_name" placeholder="введите имя автора">
+                        <input type="text" name="search" placeholder="поиск">
                     </div>
                     <div>
-                        <button type="submit">поиск</button>
+                        <button type="submit">найти</button>
                     </div>
                 </form>
             </div>

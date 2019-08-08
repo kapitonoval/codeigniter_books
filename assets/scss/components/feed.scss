@@ -10,8 +10,17 @@ header{
   z-index: 1030;
   color: #fff;
 }
+.author-name{
+  width: 200px;
+}
+.label__filter{
+  font-weight: bold;
+}
 .filter-column{
   padding: 5px;
+  select{
+    width: 100%;
+  }
   input{
     padding:10px  15px;
     border-radius: 5px;

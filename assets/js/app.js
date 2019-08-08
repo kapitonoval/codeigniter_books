@@ -8,4 +8,4 @@ window.Popper = Popper;
 require('bootstrap');
 require( "../scss/main.scss" );
 
-require('components/feed');
+// require('components/feed');
