@@ -29,7 +29,7 @@ class BookModel extends CI_Model
 
         // select author name
         if (!empty(trim($search))) {
-            $sql = "SELECT id FROM ".$this->author_tbl." WHERE MATCH (name) AGAINST (?)";
+            $sql = "SELECT id FROM " . $this->author_tbl . " WHERE MATCH (name) AGAINST (?)";
             $resultAuthor = $this->db->query($sql, [$search])->result_array();
             $authorIds = array_map(function ($relateItem) {
                 return $relateItem['id'];
@@ -49,27 +49,33 @@ class BookModel extends CI_Model
             $booksIds = array_map(function ($relateItem) {
                 return $relateItem['book_id'];
             }, $resultRelateAuthorToBooks);
-        }else if (count($authorIds) > 0){
-            $this->db->select('book_id');
-            $this->db->from($this->author_relate_tbl);
-            $this->db->group_by('book_id');
-            $this->db->where_in('author_id', $authorIds);
-            $resultRelateAuthorToBooks = $this->db->get()->result_array();
-            $booksIds = array_map(function ($relateItem) {
-                return $relateItem['book_id'];
-            }, $resultRelateAuthorToBooks);
+
+        } else {
+            if (count($authorIds) > 0) {
+                $this->db->select('book_id');
+                $this->db->from($this->author_relate_tbl);
+                $this->db->group_by('book_id');
+                $this->db->where_in('author_id', $authorIds);
+                $resultRelateAuthorToBooks = $this->db->get()->result_array();
+                $booksIds = array_map(function ($relateItem) {
+                    return $relateItem['book_id'];
+                }, $resultRelateAuthorToBooks);
+            }
         }
 
         // select books
-        if (trim($search) != ""){
-            $sql = "SELECT * FROM ".$this->book_tbl." WHERE MATCH (name) AGAINST (?)";
-            if(count($booksIds) > 0)
-                $sql .= " OR id IN (".implode(',', $booksIds).")";
+        if (trim($search) != "") {
+            $sql = "SELECT * FROM " . $this->book_tbl . " WHERE MATCH (name) AGAINST (?)";
+            if (count($booksIds) > 0) {
+                $sql .= " OR id IN (" . implode(',', $booksIds) . ")";
+            }
             return $this->db->query($sql, [$search])->result_array();
-        }else {
-            if(count($booksIds) > 0)
-                $this->db->or_where_in('id', $booksIds);
-            return $this->db->get($this->book_tbl)->result_array();
+        } else {
+            if (count($booksIds) > 0) {
+                $this->db->where_in('id', $booksIds);
+                return $this->db->get($this->book_tbl)->result_array();
+            }
+            return [];
         }
     }
 
@@ -79,7 +85,7 @@ class BookModel extends CI_Model
      */
     public function getNameAuthors()
     {
-        return array_map(function ($item){
+        return array_map(function ($item) {
             return $item['name'];
         }, $this->db->get($this->author_tbl)->result_array());
     }
